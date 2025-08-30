@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS CloudFormation Template for EC2 Instance
+
+Parameters:
+  InstanceName:
+    Description: Name of the EC2 instance
+    Type: String
+    Default: MyEC2Instance
+  InstanceType:
+    Description: EC2 instance type
+    Type: String
+    Default: t3.micro
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: String
+    Default: devops-intern
+  ImageId:
+    Description: AMI ID for the EC2 instance
+    Type: String
+    Default: ami-02d26659fd82cf299
+
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      ImageId: !Ref ImageId
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: EC2SecurityGroup
+      GroupDescription: Enable SSH access via port 22
+      VpcId: vpc-0c9f94569fe90ad1d
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  InstanceId:
+    Description: The Instance ID of the newly created EC2 instance
+    Value: !Ref EC2Instance
+  PublicIP:
+    Description: The public IP address of the newly created EC2 instance
+    Value: !GetAtt EC2Instance.PublicIp

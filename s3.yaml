@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: S3 Bucket Creation
+
+Parameters:
+  s3BucketName:
+    Type: String
+    Default: cloudformation-s3-bucket-prajwal
+
+Resources:
+  s3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref s3BucketName
+      Tags:
+        - Key: Name
+          Value: !Ref s3BucketName
+
+Outputs:
+  Arn:
+    Value: !GetAtt s3Bucket.Arn
+  WebsiteURL:
+    Value: !GetAtt s3Bucket.WebsiteURL
